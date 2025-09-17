@@ -9,6 +9,7 @@
       "AduanaMercancias/1.0.0": {
         "dependencies": {
           "Microsoft.Data.Sqlite": "6.0.25",
+          "QRCoder": "1.6.0",
           "System.Configuration.ConfigurationManager": "6.0.1",
           "System.Drawing.Common": "6.0.0",
           "itext7": "7.2.5"
@@ -233,6 +234,17 @@
           "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
             "assemblyVersion": "1.8.9.0",
             "fileVersion": "1.8.9.1"
+          }
+        }
+      },
+      "QRCoder/1.6.0": {
+        "dependencies": {
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/QRCoder.dll": {
+            "assemblyVersion": "1.6.0.0",
+            "fileVersion": "1.6.0.0"
           }
         }
       },
@@ -1063,6 +1075,13 @@
       "sha512": "sha512-wlJo8aFoeyl+W93iFXTK5ShzDYk5WBqoUPjTNEM0Xv9kn1H+4hmuCjF0/n8HLm9Nnp1aY6KNndWqQTNk+NGgRQ==",
       "path": "portable.bouncycastle/1.8.9",
       "hashPath": "portable.bouncycastle.1.8.9.nupkg.sha512"
+    },
+    "QRCoder/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XmPA81eo+oRxBuyVdswsSkTGTE1d3thfF11Z1PdD7oB56A6HU4G4AAOdySmGRMb/cljwlFTMWUtosGEnwpS6GA==",
+      "path": "qrcoder/1.6.0",
+      "hashPath": "qrcoder.1.6.0.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",

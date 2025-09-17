@@ -4,8 +4,67 @@ Imports iText.Layout.Element
 Imports iText.Layout.Properties
 Imports System.IO
 Imports System.Windows.Forms
+Imports QRCoder
+Imports System.Drawing
+Imports System.Drawing.Imaging
+Imports iText.IO.Image
 
 Public Class PDFGenerator
+    
+    ''' <summary>
+    ''' Crea el logo de Aduanas Chile como imagen
+    ''' </summary>
+    ''' <returns>Array de bytes de la imagen PNG del logo</returns>
+    Private Shared Function CrearLogoAduanas() As Byte()
+        Try
+            ' Crear una imagen simple con el logo de Aduanas Chile
+            Using bitmap As New Bitmap(200, 80)
+                Using graphics As Graphics = Graphics.FromImage(bitmap)
+                    ' Fondo blanco
+                    graphics.Clear(Color.White)
+                    
+                    ' Configurar fuentes
+                    Using fontTitle As New Font("Arial", 14, FontStyle.Bold)
+                        Using fontSubtitle As New Font("Arial", 10, FontStyle.Regular)
+                            ' Texto "ADUANAS"
+                            graphics.DrawString("ADUANAS", fontTitle, Brushes.DarkBlue, New PointF(10, 15))
+                            
+                            ' Texto "CHILE"
+                            graphics.DrawString("CHILE", fontSubtitle, Brushes.Red, New PointF(10, 35))
+                            
+                            ' Texto "CUSTOMS"
+                            graphics.DrawString("CUSTOMS", fontSubtitle, Brushes.DarkBlue, New PointF(10, 50))
+                        End Using
+                    End Using
+                End Using
+                
+                ' Convertir a bytes
+                Using stream As New MemoryStream()
+                    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png)
+                    Return stream.ToArray()
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+    
+    ''' <summary>
+    ''' Genera un código QR como imagen en memoria
+    ''' </summary>
+    ''' <param name="texto">Texto a codificar en el QR</param>
+    ''' <returns>Array de bytes de la imagen PNG del QR</returns>
+    Private Shared Function GenerarQR(texto As String) As Byte()
+        Try
+            Dim qrGenerator As New QRCodeGenerator()
+            Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(texto, QRCodeGenerator.ECCLevel.Q)
+            Dim qrCode As New PngByteQRCode(qrCodeData)
+            Return qrCode.GetGraphic(20) ' 20 píxeles por módulo
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
     Public Shared Function GenerarEtiquetaPDF(mercancia As Mercancia, Optional mostrarMensajes As Boolean = True) As String
         Try
             ' Crear carpeta Output si no existe
@@ -22,6 +81,24 @@ Public Class PDFGenerator
             Using writer As New PdfWriter(fullPath)
                 Using pdf As New PdfDocument(writer)
                     Using document As New Document(pdf)
+                        ' Agregar logo de Aduanas Chile
+                        Dim logoBytes As Byte() = CrearLogoAduanas()
+                        If logoBytes IsNot Nothing Then
+                            Try
+                                Dim logoImageData As ImageData = ImageDataFactory.Create(logoBytes)
+                                Dim logoImage As New iText.Layout.Element.Image(logoImageData)
+                                logoImage.SetWidth(150)
+                                logoImage.SetHeight(60)
+                                logoImage.SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.CENTER)
+                                document.Add(logoImage)
+                                
+                                ' Espaciado después del logo
+                                document.Add(New Paragraph(" "))
+                            Catch ex As Exception
+                                ' Si falla el logo, continuar sin él
+                            End Try
+                        End If
+                        
                         ' Título principal
                         Dim titulo As New Paragraph("MERCANCIA INCAUTADA")
                         titulo.SetTextAlignment(TextAlignment.CENTER)
@@ -66,10 +143,35 @@ Public Class PDFGenerator
                         ' Espaciado
                         document.Add(New Paragraph(" "))
 
-                        ' Datos para QR (texto plano por ahora)
-                        Dim qrData As String = mercancia.Documento & "|" & mercancia.Fecha & "|" & mercancia.Fiscalizador
-                        document.Add(New Paragraph("Código de verificación:").SetBold())
-                        document.Add(New Paragraph(qrData).SetFontSize(10).SetTextAlignment(TextAlignment.CENTER))
+                        ' Generar código QR con el número de documento
+                        Dim qrData As String = mercancia.Documento
+                        Dim qrBytes As Byte() = GenerarQR(qrData)
+                        
+                        If qrBytes IsNot Nothing Then
+                            Try
+                                ' Crear imagen del QR para el PDF
+                                Dim qrImageData As ImageData = ImageDataFactory.Create(qrBytes)
+                                Dim qrImage As New iText.Layout.Element.Image(qrImageData)
+                                
+                                ' Configurar tamaño del QR
+                                qrImage.SetWidth(100)
+                                qrImage.SetHeight(100)
+                                qrImage.SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.CENTER)
+                                
+                                ' Agregar título del QR
+                                document.Add(New Paragraph("Código QR - Documento:").SetBold().SetTextAlignment(TextAlignment.CENTER))
+                                document.Add(qrImage)
+                                
+                            Catch ex As Exception
+                                ' Si falla la imagen QR, mostrar solo el texto
+                                document.Add(New Paragraph("Código de verificación:").SetBold())
+                                document.Add(New Paragraph(qrData).SetFontSize(10).SetTextAlignment(TextAlignment.CENTER))
+                            End Try
+                        Else
+                            ' Fallback si no se puede generar el QR
+                            document.Add(New Paragraph("Código de verificación:").SetBold())
+                            document.Add(New Paragraph(qrData).SetFontSize(10).SetTextAlignment(TextAlignment.CENTER))
+                        End If
 
                         ' Pie de página
                         document.Add(New Paragraph(" "))

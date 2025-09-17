@@ -25,6 +25,7 @@ C:\aduana\bin\Debug\net6.0-windows\Microsoft.Extensions.Options.dll
 C:\aduana\bin\Debug\net6.0-windows\Microsoft.Extensions.Primitives.dll
 C:\aduana\bin\Debug\net6.0-windows\Newtonsoft.Json.dll
 C:\aduana\bin\Debug\net6.0-windows\BouncyCastle.Crypto.dll
+C:\aduana\bin\Debug\net6.0-windows\QRCoder.dll
 C:\aduana\bin\Debug\net6.0-windows\SQLitePCLRaw.batteries_v2.dll
 C:\aduana\bin\Debug\net6.0-windows\SQLitePCLRaw.core.dll
 C:\aduana\bin\Debug\net6.0-windows\SQLitePCLRaw.provider.e_sqlite3.dll
@@ -58,6 +59,7 @@ C:\aduana\obj\Debug\net6.0-windows\AduanaMercancias.Resources.resources
 C:\aduana\obj\Debug\net6.0-windows\AduanaMercancias.vbproj.GenerateResource.cache
 C:\aduana\obj\Debug\net6.0-windows\AduanaMercancias.GeneratedMSBuildEditorConfig.editorconfig
 C:\aduana\obj\Debug\net6.0-windows\AduanaMercancias.vbproj.CoreCompileInputs.cache
+C:\aduana\obj\Debug\net6.0-windows\AduanaMercancias.sourcelink.json
 C:\aduana\obj\Debug\net6.0-windows\AduanaMe.6BBBA02E.Up2Date
 C:\aduana\obj\Debug\net6.0-windows\AduanaMercancias.dll
 C:\aduana\obj\Debug\net6.0-windows\refint\AduanaMercancias.dll
