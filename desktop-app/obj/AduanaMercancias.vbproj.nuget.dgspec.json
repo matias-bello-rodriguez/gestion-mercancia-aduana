@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\aduana\\AduanaMercancias.vbproj": {}
+    "C:\\aduana\\desktop-app\\AduanaMercancias.vbproj": {}
   },
   "projects": {
-    "C:\\aduana\\AduanaMercancias.vbproj": {
+    "C:\\aduana\\desktop-app\\AduanaMercancias.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\aduana\\AduanaMercancias.vbproj",
+        "projectUniqueName": "C:\\aduana\\desktop-app\\AduanaMercancias.vbproj",
         "projectName": "AduanaMercancias",
-        "projectPath": "C:\\aduana\\AduanaMercancias.vbproj",
+        "projectPath": "C:\\aduana\\desktop-app\\AduanaMercancias.vbproj",
         "packagesPath": "C:\\Users\\MATIAS\\.nuget\\packages\\",
-        "outputPath": "C:\\aduana\\obj\\",
+        "outputPath": "C:\\aduana\\desktop-app\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
