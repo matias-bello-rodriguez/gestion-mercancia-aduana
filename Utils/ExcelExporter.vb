@@ -154,8 +154,16 @@ Public Class ExcelExporter
                     Dim qrImagePath = Path.Combine(tempFolder, $"qr_temp_{mercancia.Id}_{Guid.NewGuid()}.png")
                     qrImage.Save(qrImagePath, ImageFormat.Png)
                     
-                    ' Insertar imagen en Excel (ClosedXML no admite crear imágenes directamente)
-                    worksheet.AddPicture(qrImagePath).MoveTo(worksheet.Cell(fila, 8))
+                    ' Insertar imagen en Excel y anclarla a la celda
+                    Dim picture = worksheet.AddPicture(qrImagePath)
+                    Dim cell = worksheet.Cell(fila, 8)
+                    ' Posicionar en la esquina superior izquierda de la celda
+                    picture.MoveTo(cell, 0, 0)
+                    ' Ajustar tamaño a las dimensiones exactas: 2,59 cm x 4,53 cm (alto x ancho)
+                    ' Convertimos cm a puntos (1 cm ≈ 28.3 puntos)
+                    Dim altoEnPuntos As Double = 2.59 * 28.3 ' 73.3 puntos
+                    Dim anchoEnPuntos As Double = 4.53 * 28.3 ' 128.2 puntos
+                    picture.WithSize(altoEnPuntos, anchoEnPuntos)
                     
                     ' Eliminar imagen temporal después de usarla
                     Try
@@ -171,8 +179,9 @@ Public Class ExcelExporter
                 worksheet.Cell(fila, 8).Value = "QR: " & mercancia.Documento
             End If
             
-            ' Establecer altura de la fila para el QR
-            worksheet.Row(fila).Height = 40
+            ' Establecer altura de la fila para el QR con base en las dimensiones requeridas
+            ' La altura debe ser al menos 2,59 cm (convertidos a puntos) + un pequeño margen
+            worksheet.Row(fila).Height = 2.59 * 28.3 + 5 ' 73.3 puntos + margen
             
             ' Bordes para las celdas de datos
             worksheet.Range(fila, 1, fila, 8).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin)
@@ -193,6 +202,9 @@ Public Class ExcelExporter
         worksheet.Column(5).Width = 25  ' Mercancía
         worksheet.Column(6).Width = 18  ' Localidad
         worksheet.Column(7).Width = 12  ' BG/Org
-        worksheet.Column(8).Width = 12  ' QR
+        ' Configurar ancho para el QR con base en las dimensiones requeridas (4,53 cm)
+        ' El ancho en ClosedXML se mide en unidades diferentes, necesitamos convertir
+        ' Aproximadamente, un ancho de columna de 20 equivale a unos 4,5 cm
+        worksheet.Column(8).Width = 20  ' Ajustado para que sea de 4,53 cm de ancho
     End Sub
 End Class
