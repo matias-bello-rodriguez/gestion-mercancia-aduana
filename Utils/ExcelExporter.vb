@@ -154,16 +154,25 @@ Public Class ExcelExporter
                     Dim qrImagePath = Path.Combine(tempFolder, $"qr_temp_{mercancia.Id}_{Guid.NewGuid()}.png")
                     qrImage.Save(qrImagePath, ImageFormat.Png)
                     
-                    ' Insertar imagen en Excel y anclarla a la celda
-                    Dim picture = worksheet.AddPicture(qrImagePath)
-                    Dim cell = worksheet.Cell(fila, 8)
-                    ' Posicionar en la esquina superior izquierda de la celda
-                    picture.MoveTo(cell, 0, 0)
-                    ' Ajustar tamaño a las dimensiones exactas: 2,59 cm x 4,53 cm (alto x ancho)
-                    ' Convertimos cm a puntos (1 cm ≈ 28.3 puntos)
-                    Dim altoEnPuntos As Double = 2.59 * 28.3 ' 73.3 puntos
+                    ' Colocar QR DENTRO de la celda usando celdas contiguas para fijar
+                    ' En ClosedXML tenemos que usar una técnica diferente para asegurar que la imagen quede fija a la celda
+                    Dim altoEnPuntos As Double = 4.00 * 28.3 ' 113.2 puntos
                     Dim anchoEnPuntos As Double = 4.53 * 28.3 ' 128.2 puntos
+                    
+                    ' Obtener la celda para el QR
+                    Dim cell = worksheet.Cell(fila, 8)
+                    
+                    ' Añadir la imagen a la celda
+                    Dim picture = worksheet.AddPicture(qrImagePath)
+                    
+                    ' Anclar a la celda específica (método 1)
+                    picture.MoveTo(cell, 0, 0)
+                    
+                    ' Aseguramos que la imagen tenga el tamaño adecuado
                     picture.WithSize(altoEnPuntos, anchoEnPuntos)
+                    
+                    ' Establecemos un valor de celda vacío para asegurar que la imagen se asocie con la celda
+                    cell.Value = "" ' Asegura que la celda existe y tiene un valor
                     
                     ' Eliminar imagen temporal después de usarla
                     Try
