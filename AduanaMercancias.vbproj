@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="EPPlus" Version="8.1.1" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.25" />
     <PackageReference Include="iText7" Version="7.2.5" />
     <PackageReference Include="QRCoder" Version="1.6.0" />

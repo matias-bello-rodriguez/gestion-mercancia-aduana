@@ -10,6 +10,7 @@ Public Class FormPrincipal
     Private btnEliminar As Button
     Private btnGenerarEtiqueta As Button
     Private btnRefrescar As Button
+    Private btnExportarExcel As Button
     Private lblTitulo As Label
     Private lblContador As Label
     Private panelBotones As Panel
@@ -28,6 +29,7 @@ Public Class FormPrincipal
         Me.btnEliminar = New Button()
         Me.btnGenerarEtiqueta = New Button()
         Me.btnRefrescar = New Button()
+        Me.btnExportarExcel = New Button()
         Me.lblTitulo = New Label()
         Me.lblContador = New Label()
         Me.panelBotones = New Panel()
@@ -112,6 +114,15 @@ Public Class FormPrincipal
         Me.btnRefrescar.FlatStyle = FlatStyle.Flat
         Me.btnRefrescar.Font = New Font("Segoe UI", 10.0!, FontStyle.Bold)
 
+        ' Configurar btnExportarExcel
+        Me.btnExportarExcel.Text = "Exportar a Excel"
+        Me.btnExportarExcel.Location = New Point(10, 260)
+        Me.btnExportarExcel.Size = New Size(160, 40)
+        Me.btnExportarExcel.BackColor = Color.FromArgb(34, 139, 34)
+        Me.btnExportarExcel.ForeColor = Color.White
+        Me.btnExportarExcel.FlatStyle = FlatStyle.Flat
+        Me.btnExportarExcel.Font = New Font("Segoe UI", 10.0!, FontStyle.Bold)
+
         ' Configurar lblContador
         Me.lblContador.Text = "Total de mercancías: 0"
         Me.lblContador.Font = New Font("Segoe UI", 10.0!)
@@ -125,6 +136,7 @@ Public Class FormPrincipal
         Me.panelBotones.Controls.Add(Me.btnEliminar)
         Me.panelBotones.Controls.Add(Me.btnGenerarEtiqueta)
         Me.panelBotones.Controls.Add(Me.btnRefrescar)
+        Me.panelBotones.Controls.Add(Me.btnExportarExcel)
 
         ' Agregar controles al formulario
         Me.Controls.Add(Me.lblTitulo)
@@ -138,6 +150,7 @@ Public Class FormPrincipal
         AddHandler Me.btnEliminar.Click, AddressOf BtnEliminar_Click
         AddHandler Me.btnGenerarEtiqueta.Click, AddressOf BtnGenerarEtiqueta_Click
         AddHandler Me.btnRefrescar.Click, AddressOf BtnRefrescar_Click
+        AddHandler Me.btnExportarExcel.Click, AddressOf BtnExportarExcel_Click
         AddHandler Me.dgvMercancias.SelectionChanged, AddressOf DgvMercancias_SelectionChanged
         AddHandler Me.dgvMercancias.CellClick, AddressOf DgvMercancias_CellClick
 
@@ -234,6 +247,22 @@ Public Class FormPrincipal
 
     Private Sub BtnRefrescar_Click(sender As Object, e As EventArgs)
         CargarMercancias()
+    End Sub
+
+    Private Sub BtnExportarExcel_Click(sender As Object, e As EventArgs)
+        Try
+            Dim mercancias = DatabaseManager.ObtenerTodasLasMercancias()
+            
+            If mercancias.Count = 0 Then
+                MessageBox.Show("No hay mercancías para exportar", "Sin Datos", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Return
+            End If
+            
+            ExcelExporter.ExportarMercanciasAExcel(mercancias)
+            
+        Catch ex As Exception
+            MessageBox.Show("Error al exportar: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub DgvMercancias_SelectionChanged(sender As Object, e As EventArgs)
